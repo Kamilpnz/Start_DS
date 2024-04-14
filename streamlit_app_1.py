@@ -67,44 +67,46 @@ plt.ylabel('Заработная плата, руб')
 
 st.pyplot(plt)
 
-def encode_punycode(url):
-    # Разбиваем URL на компоненты
-    parsed_url = urlparse(url)
-    # Кодируем доменное имя в Punycode
-    encoded_domain = parsed_url.hostname.encode('idna').decode('ascii')
-    # Кодируем путь для безопасной передачи через URL
-    encoded_path = quote(parsed_url.path)
-    # Возвращаем перекодированный URL
-    return urlunparse(parsed_url._replace(netloc=encoded_domain, path=encoded_path))
+# def encode_punycode(url):
+#     # Разбиваем URL на компоненты
+#     parsed_url = urlparse(url)
+#     # Кодируем доменное имя в Punycode
+#     encoded_domain = parsed_url.hostname.encode('idna').decode('ascii')
+#     # Кодируем путь для безопасной передачи через URL
+#     encoded_path = quote(parsed_url.path)
+#     # Возвращаем перекодированный URL
+#     return urlunparse(parsed_url._replace(netloc=encoded_domain, path=encoded_path))
 
-# Отключаем предупреждения SSL
-disable_warnings(InsecureRequestWarning)
+# # Отключаем предупреждения SSL
+# disable_warnings(InsecureRequestWarning)
 
-# Исходный URL
-url = 'https://уровень-инфляции.рф/таблицы-инфляции'
+# # Исходный URL
+# url = 'https://уровень-инфляции.рф/таблицы-инфляции'
 
-# Кодирование доменного имени и пути в Punycode/URL-код
-encoded_url = encode_punycode(url)
-print("Encoded URL:", encoded_url)
+# # Кодирование доменного имени и пути в Punycode/URL-код
+# encoded_url = encode_punycode(url)
+# print("Encoded URL:", encoded_url)
 
-# Пытаемся загрузить данные, игнорируя проверку SSL
-try:
-    response = requests.get(encoded_url, verify=False)
-    # Использование StringIO для считывания HTML
-    html_data = StringIO(response.text)
-    tables = pd.read_html(html_data)  # Используем StringIO объект для pandas
-    # print(f"Найдено таблиц: {len(tables)}")
-    if tables:
-        df_inf = tables[0]
-    #     # Опционально: сохранение таблиц в CSV
-    #     for i, table in enumerate(tables):
-    #         table.to_csv(f'table_{i+1}.csv', index=False)
-    #     print("Таблицы сохранены в файлы CSV.")
-    # else:
-    #     print("На странице не найдены таблицы.")
-except Exception as e:
-    print("Произошла ошибка при загрузке таблиц:", e)
+# # Пытаемся загрузить данные, игнорируя проверку SSL
+# try:
+#     response = requests.get(encoded_url, verify=False)
+#     # Использование StringIO для считывания HTML
+#     html_data = StringIO(response.text)
+#     tables = pd.read_html(html_data)  # Используем StringIO объект для pandas
+#     # print(f"Найдено таблиц: {len(tables)}")
+#     if tables:
+#         df_inf = tables[0]
+#     #     # Опционально: сохранение таблиц в CSV
+#     #     for i, table in enumerate(tables):
+#     #         table.to_csv(f'table_{i+1}.csv', index=False)
+#     #     print("Таблицы сохранены в файлы CSV.")
+#     # else:
+#     #     print("На странице не найдены таблицы.")
+# except Exception as e:
+#     print("Произошла ошибка при загрузке таблиц:", e)
 
+
+df_inf = pd.read_csv('table_1.csv')
 
 df_inf = df_inf.set_index('Год') \
     .rename(columns={'Всего': 'inf_rate'})
